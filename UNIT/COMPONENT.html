@@ -88,12 +88,13 @@
       indexEditando = index;
     }
 
-function removerVeiculo(index) {
-  if (confirm("Tem certeza que deseja excluir este veículo?")) {
-    veiculos.splice(index, 1);
-    atualizarTabela();
-  }
-}
+    function removerVeiculo(index) {
+      if (confirm("Tem certeza que deseja excluir este veículo?")) {
+        veiculos.splice(index, 1);
+        atualizarTabela();
+      }
+    }
+
     function atualizarTabela() {
       const filtroPlaca = document.getElementById("filtroPlaca").value.toLowerCase();
       const filtroStatus = document.getElementById("filtroStatus").value;
@@ -110,14 +111,23 @@ function removerVeiculo(index) {
             <td>${v.modelo}</td>
             <td>${v.placa}</td>
             <td>${v.status}</td>
-            <td><button class="btn" onclick="editarVeiculo(${index})">Editar</button></td>
+            <td>
+              <button class="btn" onclick="editarVeiculo(${index})">Editar</button>
+              <button class="btn" onclick="removerVeiculo(${index})">Excluir</button>
+            </td>
           </tr>`;
           tbody.innerHTML += row;
         }
       });
     }
 
-
     function limparCampos() {
       document.getElementById("marca").value = "";
-      document.getElementByI
+      document.getElementById("modelo").value = "";
+      document.getElementById("placa").value = "";
+      document.getElementById("status").value = "Disponível";
+    }
+  </script>
+
+</body>
+</html>
