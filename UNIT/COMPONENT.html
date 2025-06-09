@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Veículos para Locação</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    input, select, button { margin: 5px; padding: 5px; }
+    table { margin-top: 20px; width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    .btn { cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h2>Cadastro de Veículos</h2>
+
+  <label>Marca: <input type="text" id="marca"></label><br>
+  <label>Modelo: <input type="text" id="modelo"></label><br>
+  <label>Placa: <input type="text" id="placa"></label><br>
+  <label>Status:
+    <select id="status">
+      <option value="Disponível">Disponível</option>
+      <option value="Alugado">Alugado</option>
+    </select>
+  </label><br>
+
+  <button onclick="cadastrarOuAtualizarVeiculo()">Salvar Veículo</button>
+
+  <h3>Filtrar Veículos</h3>
+  <label>Placa: <input type="text" id="filtroPlaca" oninput="atualizarTabela()"></label>
+  <label>Status:
+    <select id="filtroStatus" onchange="atualizarTabela()">
+      <option value="">Todos</option>
+      <option value="Disponível">Disponível</option>
+      <option value="Alugado">Alugado</option>
+    </select>
+  </label>
+
+  <h2>Veículos Cadastrados</h2>
+  <table id="tabelaVeiculos">
+    <thead>
+      <tr>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Placa</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const veiculos = [];
+    let indexEditando = -1;
+
+    function cadastrarOuAtualizarVeiculo() {
+      const marca = document.getElementById("marca").value;
+      const modelo = document.getElementById("modelo").value;
+      const placa = document.getElementById("placa").value;
+      const status = document.getElementById("status").value;
+
+      if (!marca || !modelo || !placa) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      const veiculo = { marca, modelo, placa, status };
+
+      if (indexEditando === -1) {
+        veiculos.push(veiculo);
+      } else {
+        veiculos[indexEditando] = veiculo;
+        indexEditando = -1;
+      }
+
+      limparCampos();
+      atualizarTabela();
+    }
+
+    function editarVeiculo(index) {
+      const v = veiculos[index];
+      document.getElementById("marca").value = v.marca;
+      document.getElementById("modelo").value = v.modelo;
+      document.getElementById("placa").value = v.placa;
+      document.getElementById("status").value = v.status;
+      indexEditando = index;
+    }
+
+function removerVeiculo(index) {
+  if (confirm("Tem certeza que deseja excluir este veículo?")) {
+    veiculos.splice(index, 1);
+    atualizarTabela();
+  }
+}
+    function atualizarTabela() {
+      const filtroPlaca = document.getElementById("filtroPlaca").value.toLowerCase();
+      const filtroStatus = document.getElementById("filtroStatus").value;
+      const tbody = document.querySelector("#tabelaVeiculos tbody");
+      tbody.innerHTML = "";
+
+      veiculos.forEach((v, index) => {
+        const placaMatch = v.placa.toLowerCase().includes(filtroPlaca);
+        const statusMatch = !filtroStatus || v.status === filtroStatus;
+
+        if (placaMatch && statusMatch) {
+          const row = `<tr>
+            <td>${v.marca}</td>
+            <td>${v.modelo}</td>
+            <td>${v.placa}</td>
+            <td>${v.status}</td>
+            <td><button class="btn" onclick="editarVeiculo(${index})">Editar</button></td>
+          </tr>`;
+          tbody.innerHTML += row;
+        }
+      });
+    }
+
+
+    function limparCampos() {
+      document.getElementById("marca").value = "";
+      document.getElementByI
