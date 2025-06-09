@@ -4,52 +4,68 @@
   <meta charset="UTF-8">
   <title>Cadastro de Veículos para Locação</title>
   <style>
-    body { font-family: Arial; margin: 20px; }
-    input, select, button { margin: 5px; padding: 5px; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, select, button { margin: 5px 0; padding: 6px; width: 100%; box-sizing: border-box; }
     table { margin-top: 20px; width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    .btn { cursor: pointer; }
+    .btn { cursor: pointer; margin: 2px; }
+    
+    .bloco {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .bloco h2, .bloco h3 {
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Cadastro de Veículos</h2>
+  <div class="bloco" id="formulario">
+    <h2>Cadastro de Veículos</h2>
+    <label>Marca: <input type="text" id="marca"></label><br>
+    <label>Modelo: <input type="text" id="modelo"></label><br>
+    <label>Placa: <input type="text" id="placa"></label><br>
+    <label>Status:
+      <select id="status">
+        <option value="Disponível">Disponível</option>
+        <option value="Alugado">Alugado</option>
+      </select>
+    </label><br>
+    <button onclick="cadastrarOuAtualizarVeiculo()">Salvar Veículo</button>
+  </div>
 
-  <label>Marca: <input type="text" id="marca"></label><br>
-  <label>Modelo: <input type="text" id="modelo"></label><br>
-  <label>Placa: <input type="text" id="placa"></label><br>
-  <label>Status:
-    <select id="status">
-      <option value="Disponível">Disponível</option>
-      <option value="Alugado">Alugado</option>
-    </select>
-  </label><br>
+  <div class="bloco" id="filtros">
+    <h3>Filtrar Veículos</h3>
+    <label>Placa: <input type="text" id="filtroPlaca" oninput="atualizarTabela()"></label>
+    <label>Status:
+      <select id="filtroStatus" onchange="atualizarTabela()">
+        <option value="">Todos</option>
+        <option value="Disponível">Disponível</option>
+        <option value="Alugado">Alugado</option>
+      </select>
+    </label>
+  </div>
 
-  <button onclick="cadastrarOuAtualizarVeiculo()">Salvar Veículo</button>
-
-  <h3>Filtrar Veículos</h3>
-  <label>Placa: <input type="text" id="filtroPlaca" oninput="atualizarTabela()"></label>
-  <label>Status:
-    <select id="filtroStatus" onchange="atualizarTabela()">
-      <option value="">Todos</option>
-      <option value="Disponível">Disponível</option>
-      <option value="Alugado">Alugado</option>
-    </select>
-  </label>
-
-  <h2>Veículos Cadastrados</h2>
-  <table id="tabelaVeiculos">
-    <thead>
-      <tr>
-        <th>Marca</th>
-        <th>Modelo</th>
-        <th>Placa</th>
-        <th>Status</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div class="bloco" id="tabela">
+    <h2>Veículos Cadastrados</h2>
+    <table id="tabelaVeiculos">
+      <thead>
+        <tr>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Placa</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <script>
     const veiculos = [];
@@ -109,25 +125,3 @@
           const row = `<tr>
             <td>${v.marca}</td>
             <td>${v.modelo}</td>
-            <td>${v.placa}</td>
-            <td>${v.status}</td>
-            <td>
-              <button class="btn" onclick="editarVeiculo(${index})">Editar</button>
-              <button class="btn" onclick="removerVeiculo(${index})">Excluir</button>
-            </td>
-          </tr>`;
-          tbody.innerHTML += row;
-        }
-      });
-    }
-
-    function limparCampos() {
-      document.getElementById("marca").value = "";
-      document.getElementById("modelo").value = "";
-      document.getElementById("placa").value = "";
-      document.getElementById("status").value = "Disponível";
-    }
-  </script>
-
-</body>
-</html>
