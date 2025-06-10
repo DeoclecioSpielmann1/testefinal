@@ -9,7 +9,7 @@
     table { margin-top: 20px; width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
     .btn { cursor: pointer; margin: 2px; }
-    
+
     .bloco {
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -25,7 +25,7 @@
 </head>
 <body>
 
-  <div class="bloco" id="formulario">
+  <div class="bloco" id="form">
     <h2>Cadastro de Veículos</h2>
     <label>Marca: <input type="text" id="marca"></label><br>
     <label>Modelo: <input type="text" id="modelo"></label><br>
@@ -72,9 +72,9 @@
     let indexEditando = -1;
 
     function cadastrarOuAtualizarVeiculo() {
-      const marca = document.getElementById("marca").value;
-      const modelo = document.getElementById("modelo").value;
-      const placa = document.getElementById("placa").value;
+      const marca = document.getElementById("marca").value.trim();
+      const modelo = document.getElementById("modelo").value.trim();
+      const placa = document.getElementById("placa").value.trim();
       const status = document.getElementById("status").value;
 
       if (!marca || !modelo || !placa) {
@@ -125,3 +125,59 @@
           const row = `<tr>
             <td>${v.marca}</td>
             <td>${v.modelo}</td>
+            <td>${v.placa}</td>
+            <td>${v.status}</td>
+            <td>
+              <button class="btn" onclick="editarVeiculo(${index})">Editar</button>
+              <button class="btn" onclick="removerVeiculo(${index})">Remover</button>
+            </td>
+          </tr>`;
+          tbody.innerHTML += row;
+        }
+      });
+    }
+
+    function limparCampos() {
+      document.getElementById("marca").value = "";
+      document.getElementById("modelo").value = "";
+      document.getElementById("placa").value = "";
+      document.getElementById("status").value = "Disponível";
+      indexEditando = -1;
+    }
+
+    // ----------------- TESTES SIMPLES ------------------
+    function testar(descricao, fn) {
+      try {
+        fn();
+        console.log("✅ " + descricao);
+      } catch (erro) {
+        console.error("❌ " + descricao);
+        console.error("   ➤ " + erro.message);
+      }
+    }
+
+    function runComponentTests() {
+      testar("Formulário deve estar presente na página", () => {
+        const form = document.getElementById("form");
+        if (!form) throw new Error("Formulário não encontrado");
+      });
+
+      testar("Tabela deve estar presente na página", () => {
+        const tabela = document.getElementById("tabelaVeiculos");
+        if (!tabela) throw new Error("Tabela de veículos não encontrada");
+      });
+
+      testar("Botão de salvar deve existir", () => {
+        const botoes = document.querySelectorAll("button");
+        const salvar = Array.from(botoes).find(b => b.textContent.includes("Salvar"));
+        if (!salvar) throw new Error("Botão Salvar Veículo não encontrado");
+      });
+    }
+
+    // Executar os testes quando a página carregar
+    window.onload = function () {
+      runComponentTests();
+    };
+  </script>
+</body>
+</html>
