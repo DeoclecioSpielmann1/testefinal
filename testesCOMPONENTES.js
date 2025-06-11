@@ -1,40 +1,34 @@
-// Verifica se todos os campos e botões principais existem no DOM
-testar("COMPONENTE - Elementos de entrada e botão existem", () => {
-  const campos = ["marca", "modelo", "placa", "status", "filtroPlaca", "filtroStatus"];
-  campos.forEach(id => {
-    if (!document.getElementById(id)) throw new Error(`Elemento "${id}" não encontrado`);
+function runComponentTests() {
+  testar("COMPONENT - Formulário deve estar presente na página", () => {
+    const form = document.getElementById("form");
+    if (!form) throw new Error("Formulário não encontrado");
   });
 
-  const tabela = document.getElementById("tabelaVeiculos");
-  if (!tabela) throw new Error("Tabela de veículos não encontrada");
+  testar("COMPONENT - Inputs devem receber valores corretamente", () => {
+    const input1 = document.getElementById("num1");
+    const input2 = document.getElementById("num2");
 
-  const botoes = document.getElementsByTagName("button");
-  if (botoes.length === 0) throw new Error("Nenhum botão encontrado");
-});
+    input1.value = "10";
+    input2.value = "5";
 
-// Verifica se o botão de cadastro insere uma nova linha na tabela
-testar("COMPONENTE - Cadastro atualiza a tabela", () => {
-  veiculos.length = 0;
-  document.getElementById("marca").value = "Chevrolet";
-  document.getElementById("modelo").value = "Onix";
-  document.getElementById("placa").value = "DEF5678";
-  document.getElementById("status").value = "Disponível";
-  cadastrarOuAtualizarVeiculo();
+    if (input1.value !== "10" || input2.value !== "5") {
+      throw new Error("Inputs não aceitaram valores corretamente");
+    }
+  });
 
-  const linhas = document.querySelectorAll("#tabelaVeiculos tbody tr");
-  if (linhas.length !== 1) throw new Error("Tabela não foi atualizada corretamente");
-});
+  testar("COMPONENT - Formulário dispara evento de submit", () => {
+    const form = document.getElementById("form");
+    let chamado = false;
 
-// Verifica se os filtros ocultam e exibem corretamente a tabela
-testar("COMPONENTE - Filtro por status funciona", () => {
-  veiculos.length = 0;
-  veiculos.push({ marca: "Fiat", modelo: "Uno", placa: "AAA1111", status: "Alugado" });
-  veiculos.push({ marca: "Toyota", modelo: "Etios", placa: "BBB2222", status: "Disponível" });
+    const listener = (e) => {
+      chamado = true;
+      e.preventDefault();
+      form.removeEventListener("submit", listener);
+    };
 
-  document.getElementById("filtroStatus").value = "Disponível";
-  atualizarTabela();
+    form.addEventListener("submit", listener);
+    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
 
-  const linhas = document.querySelectorAll("#tabelaVeiculos tbody tr");
-  if (linhas.length !== 1) throw new Error("Filtro por status não funcionou");
-  if (!linhas[0].textContent.includes("Disponível")) throw new Error("Linha exibida não corresponde ao filtro");
-});
+    if (!chamado) throw new Error("Evento de submit não foi chamado");
+  });
+}
